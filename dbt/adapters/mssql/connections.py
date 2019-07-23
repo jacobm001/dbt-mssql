@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
 
+import pyodbc
 
 MSSQL_CREDENTIALS_CONTRACT = {
     'type': 'object',
@@ -11,7 +12,7 @@ MSSQL_CREDENTIALS_CONTRACT = {
         'driver': {
             'type': 'string',
         },
-        'server': {
+        'host': {
             'type': 'string',
         },
         'database': {
