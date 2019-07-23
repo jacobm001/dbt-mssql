@@ -7,4 +7,4 @@ class MSSQLAdapter(SQLAdapter):
 
     @classmethod
     def date_function(cls):
-        return 'curent_date()'
+        return 'get_date()'
