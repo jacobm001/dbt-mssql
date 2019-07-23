@@ -8,19 +8,37 @@ MSSQL_CREDENTIALS_CONTRACT = {
     'type': 'object',
     'additionalProperties': False,
     'properties': {
+        'driver': {
+            'type': 'string',
+        },
+        'server': {
+            'type': 'string',
+        },
         'database': {
             'type': 'string',
         },
         'schema': {
             'type': 'string',
         },
+        'UID': {
+            'type': 'string',
+        },
+        'PWD': {
+            'type': 'string',
+        },
     },
-    'required': ['database', 'schema'],
+    'required': ['server', 'database', 'schema', 'UID', 'PWD'],
 }
 
 
 class MSSQLCredentials(Credentials):
     SCHEMA = MSSQL_CREDENTIALS_CONTRACT
+    ALIASES = {
+        'user': 'UID'
+        , 'username': 'UID'
+        , 'pass': 'PWD'
+        , 'password': 'PWD'
+    }
 
     @property
     def type(self):
