@@ -21,6 +21,12 @@
     {%- endcall %}
 {% endmacro %}
 
+{% macro mssql__truncate_relation(relation) -%}
+    {% call statement('truncate_relation') -%}
+        truncate table {{ relation }}
+    {%- endcall %}
+{% endmacro %}
+
 {% macro mssql__check_schema_exists(database, schema) -%}
     {% call statement('check_schema_exists', fetch_result=True, auto_begin=False) -%}
         select 
