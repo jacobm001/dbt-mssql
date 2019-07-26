@@ -63,6 +63,13 @@
     {{ return(load_result('list_relations_without_caching').table) }}
 {% endmacro %}
 
+{% macro mssql_create_table_as(temporary, relation, sql) -%}
+    create table {% if temporary: -%}#{%- endif %}{{ relation.identifier }}
+    as (
+        {{ sql }}
+    );
+{% endmacro %}
+
 {% macro mssql__create_view_as(relation, sql, auto_begin=False) -%}
   create view {{ relation.schema }}.{{ relation.identifier }} as (
     {{ sql }}
