@@ -33,15 +33,23 @@ MSSQL_CREDENTIALS_CONTRACT = {
         'PWD': {
             'type': 'string',
         },
+        'windows_login': {
+            'type': 'boolean'
+        }
     },
-    'required': ['host', 'database', 'schema', 'UID', 'PWD'],
+    'required': ['driver','host', 'database', 'schema'],
 }
 
 
 class MSSQLCredentials(Credentials):
     SCHEMA = MSSQL_CREDENTIALS_CONTRACT
     ALIASES = {
-        'user': 'UID', 'username': 'UID', 'pass': 'PWD', 'password': 'PWD', 'server': 'host'
+        'user': 'UID'
+        , 'username': 'UID'
+        , 'pass': 'PWD'
+        , 'password': 'PWD'
+        , 'server': 'host'
+        , 'trusted_connection': 'windows_login'
     }
 
     @property
@@ -128,13 +136,19 @@ class MSSQLConnectionManager(SQLConnectionManager):
 
         try:
             con_str = []
-            con_str.append(f"DRIVER={{ODBC Driver 17 for SQL Server}}")
+            con_str.append(f"DRIVER={{{credentials.driver}}}")
             con_str.append(f"SERVER={credentials.host}")
             con_str.append(f"Database={credentials.database}")
-            con_str.append(f"UID={credentials.UID}")
-            con_str.append(f"PWD={credentials.PWD}")
+
+            if credentials.windows_login == False:
+                con_str.append(f"UID={credentials.UID}")
+                con_str.append(f"PWD={credentials.PWD}")
+            else:
+                con_str.append(f"trusted_connection=yes")
 
             con_str_concat = ';'.join(con_str)
+            logger.debug(f'Using connection string: {con_str_concat}')
+
             handle = pyodbc.connect(con_str_concat, autocommit=True)
 
             connection.state = 'open'
