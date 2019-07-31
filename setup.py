@@ -3,7 +3,7 @@ from setuptools import find_packages
 from distutils.core import setup
 
 package_name = "dbt-mssql"
-package_version = "0.0.1"
+package_version = "0.0.2"
 description = """The mssql adpter plugin for dbt (data build tool)"""
 
 setup(
