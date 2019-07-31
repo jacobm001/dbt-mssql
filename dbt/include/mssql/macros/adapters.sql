@@ -44,7 +44,7 @@
 {% macro mssql__list_relations_without_caching(information_schema, schema) %}
     {% call statement('list_relations_without_caching', fetch_result=True) %}
         select
-            '{{ information_schema.database.lower() }}' as "database"
+            '{{ information_schema.database }}' as "database"
             , table_name as name
             , table_schema as "schema"
             , 'table' as type
@@ -56,7 +56,7 @@
         union all
 
                 select
-            '{{ information_schema.database.lower() }}' as "database"
+            '{{ information_schema.database }}' as "database"
             , table_name as name
             , table_schema as "schema"
             , 'view' as type
