@@ -47,21 +47,13 @@
             '{{ information_schema.database }}' as "database"
             , table_name as name
             , table_schema as "schema"
-            , 'table' as type
+            , case 
+                when table_type = 'BASE TABLE'
+                    then 'table'
+                else lower(table_type)
+            end as type
         from 
             {{ information_schema.database }}.information_schema.TABLES
-        where 
-            table_schema = '{{ schema }}'
-        
-        union all
-
-                select
-            '{{ information_schema.database }}' as "database"
-            , table_name as name
-            , table_schema as "schema"
-            , 'view' as type
-        from 
-            {{ information_schema.database }}.information_schema.VIEWS
         where 
             table_schema = '{{ schema }}'
     {% endcall %}
@@ -91,8 +83,8 @@
 {% macro mssql__get_columns_in_relation(relation) -%}
     {% call statement('get_columns_in_relation', fetch_result=True) %}
         select 
-            table_name
-            data_type
+            column_name
+            , data_type
             , character_maximum_length
             , numeric_precision
             , numeric_scale
