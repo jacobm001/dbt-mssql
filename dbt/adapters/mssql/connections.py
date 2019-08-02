@@ -59,7 +59,7 @@ class MSSQLCredentials(Credentials):
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
         # raise NotImplementedError
-        return ('server', 'database', 'schema', 'UID', 'PWD')
+        return ('server', 'database', 'schema', 'UID')
 
 
 class MSSQLConnectionManager(SQLConnectionManager):
