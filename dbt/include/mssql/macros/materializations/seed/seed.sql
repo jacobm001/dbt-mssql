@@ -33,3 +33,7 @@
     {# Return SQL so we can render it out into the compiled files #}
     {{ return(statements[0]) }}
 {% endmacro %}
+
+{% macro mssql__load_csv_rows(model) %}
+  {{ return(basic_load_csv_rows(model, 200) )}}
+{% endmacro %}
