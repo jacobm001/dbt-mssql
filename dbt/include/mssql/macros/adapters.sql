@@ -69,9 +69,9 @@
 {% endmacro %}
 
 {% macro mssql__create_view_as(relation, sql, auto_begin=False) -%}
-  create view {{ relation.schema }}.{{ relation.identifier }} as (
+  create view {{ relation.schema }}.{{ relation.identifier }} as
     {{ sql }}
-  );
+  ;
 {% endmacro %}
 
 {% macro mssql__rename_relation(from_relation, to_relation) -%}
