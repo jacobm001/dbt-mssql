@@ -45,3 +45,7 @@ foo:
       username: dbt_user
       password: super_secret_dbt_password
 ```
+
+## Jaffle Shop
+
+Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_shop) package is currently unsupported by this adapter. At the time of this writing, jaffle shop uses the `using()` join, and `group by [ordinal]` notation which is not supported in T-SQL.
