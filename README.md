@@ -23,7 +23,7 @@ Required parameters are:
 
 **Example profile:**
 
-The example below configures a seperate dev and prod environment for the package, _foo_.
+The example below configures a seperate dev and prod environment for the package, _foo_. You will likely need to alter the `driver` variable to match whatever is installed on your system. In this example, I'm using version 17, which is the newest on my system. If you have something else on your system, it should work as well.
 
 ```yaml
 foo:
