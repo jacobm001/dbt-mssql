@@ -62,17 +62,25 @@
 {% endmacro %}
 
 {% macro mssql__create_table_as(temporary, relation, sql) -%}
-    with cte as (
-      {{ sql }}  
-    ) select * into {{ relation.schema }}.{% if temporary: -%}#{%- endif %}{{ relation.identifier }}
-    from cte;
+    {%- set temp_view_indentifier = relation.identifier + '_dbtmssql_tmp' -%}
+    {%- set temp_view_sql = sql.replace("'", "''") -%}
+
+    if object_id('{{ temp_view_indentifier }}') is not null
+	    drop view {{ temp_view_indentifier }};
+
+    exec('create view {{ relation.schema }}.{{ temp_view_indentifier }} as {{ temp_view_sql }}');
+
+    select * 
+    into {{ relation.schema }}.{% if temporary: -%}#{%- endif %}{{ relation.identifier }} 
+    from {{ relation.schema }}.{{ temp_view_indentifier }};
+
+    drop view {{ relation.schema }}.{{ temp_view_indentifier }};
 {% endmacro %}
 
 {% macro mssql__create_view_as(relation, sql, auto_begin=False) -%}
-  create view {{ relation.schema }}.{{ relation.identifier }} as (
-    {{ sql }}
-  );
-{% endmacro %}
+    create view {{ relation.schema }}.{{ relation.identifier }} as
+    {{ sql }};
+{%- endmacro %}
 
 {% macro mssql__rename_relation(from_relation, to_relation) -%}
   {% call statement('rename_relation') -%}
