@@ -1,8 +1,10 @@
-{% macro drop_all_indexes_on_table() %}
+{% macro drop_xml_indexes() %}
 {# Altered from https://stackoverflow.com/q/1344401/10415173 #}
 
-declare @drop_xml_indexes_first nvarchar(max);
-select @drop_xml_indexes_first = ( 
+{{ log("Running drop_xml_indexes() macro...") }}
+
+declare @drop_xml_indexes nvarchar(max);
+select @drop_xml_indexes = ( 
     select 'DROP INDEX IF EXISTS [' + sys.indexes.[name] + '] ON ' + '[' + SCHEMA_NAME(sys.tables.[schema_id]) + '].[' + OBJECT_NAME(sys.tables.[object_id]) + ']; '
     from sys.indexes 
     inner join sys.tables on sys.indexes.object_id = sys.tables.object_id
@@ -10,10 +12,18 @@ select @drop_xml_indexes_first = (
       and sys.indexes.type_desc = 'XML'
       and sys.tables.[name] = '{{ this.table }}'
     for xml path('')
-); exec sp_executesql @drop_xml_indexes_first;
+); exec sp_executesql @drop_xml_indexes;
 
-declare @drop_spatial_indexes_second nvarchar(max);
-select @drop_spatial_indexes_second = ( 
+{% endmacro %}
+
+
+{% macro drop_spatial_indexes() %}
+{# Altered from https://stackoverflow.com/q/1344401/10415173 #}
+
+{{ log("Running drop_spatial_indexes() macro...") }}
+
+declare @drop_spatial_indexes nvarchar(max);
+select @drop_spatial_indexes = ( 
     select 'DROP INDEX IF EXISTS [' + sys.indexes.[name] + '] ON ' + '[' + SCHEMA_NAME(sys.tables.[schema_id]) + '].[' + OBJECT_NAME(sys.tables.[object_id]) + ']; '
     from sys.indexes 
     inner join sys.tables on sys.indexes.object_id = sys.tables.object_id
@@ -21,26 +31,58 @@ select @drop_spatial_indexes_second = (
       and sys.indexes.type_desc = 'Spatial'
       and sys.tables.[name] = '{{ this.table }}'
     for xml path('')
-); exec sp_executesql @drop_spatial_indexes_second;
+); exec sp_executesql @drop_spatial_indexes;
 
-declare @drop_fk_constraints_next nvarchar(max);
-select @drop_fk_constraints_next = ( 
+{% endmacro %}
+
+
+{% macro drop_fk_constraints() %}
+{# Altered from https://stackoverflow.com/q/1344401/10415173 #}
+
+{{ log("Running drop_fk_constraints() macro...") }}
+
+declare @drop_fk_constraints nvarchar(max);
+select @drop_fk_constraints = ( 
     select 'ALTER TABLE [' + SCHEMA_NAME(sys.foreign_keys.[schema_id]) + '].[' + OBJECT_NAME(sys.foreign_keys.[parent_object_id]) + '] DROP CONSTRAINT IF EXISTS [' + sys.foreign_keys.[name]+ '];'
     from sys.foreign_keys 
     inner join sys.tables on sys.foreign_keys.[referenced_object_id] = sys.tables.[object_id]
     where sys.tables.[name] = '{{ this.table }}'
     for xml path('') 
-); exec sp_executesql @drop_fk_constraints_next;
+); exec sp_executesql @drop_fk_constraints;
 
-declare @drop_pk_constraints_next nvarchar(max);
-select @drop_pk_constraints_next = ( 
+{% endmacro %}
+
+
+{% macro drop_pk_constraints() %}
+{# Altered from https://stackoverflow.com/q/1344401/10415173 #}
+
+{{ drop_xml_indexes() }}
+
+{{ drop_spatial_indexes() }}
+
+{{ drop_fk_constraints() }}
+
+{{ log("Running drop_pk_constraints() macro...") }}
+
+declare @drop_pk_constraints nvarchar(max);
+select @drop_pk_constraints = ( 
     select 'ALTER TABLE [' + SCHEMA_NAME(sys.tables.[schema_id]) + '].[' + sys.tables.[name] + '] DROP CONSTRAINT IF EXISTS [' + sys.indexes.[name]+ '];'
     from sys.indexes 
     inner join sys.tables on sys.indexes.[object_id] = sys.tables.[object_id]
     where sys.indexes.is_primary_key = 1
       and sys.tables.[name] = '{{ this.table }}'
     for xml path('') 
-); exec sp_executesql @drop_pk_constraints_next;
+); exec sp_executesql @drop_pk_constraints;
+
+{% endmacro %}
+
+
+{% macro drop_all_indexes_on_table() %}
+{# Altered from https://stackoverflow.com/q/1344401/10415173 #}
+
+{{ drop_pk_constraints() }}
+
+{{ log("Dropping remaining indexes...") }}
 
 declare @drop_remaining_indexes_last nvarchar(max);
 select @drop_remaining_indexes_last = (
@@ -60,11 +102,15 @@ select @drop_remaining_indexes_last = (
 
 {% if include_names is undefined %}
 
+{{ log("Creating nonclustered index without include clause...") }}
+
 create nonclustered index 
     {{ this.table }}__index_on_{{ columns|join("_") }}
       on {{ this }} ({{ '[' + columns|join("], [") + ']' }})
  
 {% else %}
+
+{{ log("Creating nonclustered index with include clause...") }}
 
 create nonclustered index 
     {{ this.table }}__index_on_{{ columns|join("_") }}
