@@ -1,3 +1,13 @@
+{% macro create_clustered_index(column) -%}
+
+{{ log("Creating clustered index...") }}
+
+create clustered index 
+    {{ this.table }}__clustered_index_on_{{ column }}
+      on {{ this }} ({{ '[' + column + ']' }})
+
+{%- endmacro %}
+
 {% macro drop_xml_indexes() %}
 {# Altered from https://stackoverflow.com/q/1344401/10415173 #}
 
