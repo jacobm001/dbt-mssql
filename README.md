@@ -59,12 +59,10 @@ Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_s
 
 ### Macro Syntax
 
-_create_clustered_index_ takes one argument:
+- _create_clustered_index_ takes one argument:
   - column - a quoted string that refers to the column you want to create a clustered index on
-
-_drop_all_indexes_on_table_ needs no arguments.
-
-_create_nonclustered_index_ takes two arguments:
+- _drop_all_indexes_on_table_ needs no arguments.
+- _create_nonclustered_index_ takes two arguments:
   - columns - a list of quoted strings that refer to the column names you want to create the index on
   - includes - a list of quotes strings that refer to the column names that you want to include in the index look-ups.
 
