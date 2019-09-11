@@ -59,6 +59,9 @@ Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_s
 
 ### Macro Syntax
 
+_create_clustered_index_ takes one argument:
+  - column - a quoted string that refers to the column you want to create a clustered index on
+
 _drop_all_indexes_on_table_ needs no arguments.
 
 _create_nonclustered_index_ takes two arguments:
@@ -83,10 +86,11 @@ _create_nonclustered_index_ takes two arguments:
     config({
       "pre-hook": "{{ drop_all_indexes_on_table() }}",
       "post-hook": [
+         "{{ create_clustered_index(column = 'some_table_key'}}",
          "{{ create_nonclustered_index(columns = ['some_column']) }}",
          "{{ create_nonclustered_index(columns = ['a_colmumn', 'the_column']) }}",
          "{{ create_nonclustered_index(columns = ['this_column', 'that_column'], includes = ['my_column', 'your_column']) }}"
-	    ]
+	 ]
     }) 
 }}
 ```
