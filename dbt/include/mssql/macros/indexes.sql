@@ -102,11 +102,15 @@ select @drop_remaining_indexes_last = (
 {%- endmacro %}
 
 
-{% macro create_clustered_index(columns) -%}
+{% macro create_clustered_index(columns, unique=False) -%}
 
 {{ log("Creating clustered index...") }}
 
-create clustered index 
+create
+{% if unique -%}
+unique
+{% endif %}
+clustered index 
     {{ this.table }}__clustered_index_on_{{ columns|join("_") }}
       on {{ this }} ({{ '[' + columns|join("], [") + ']' }})
 
