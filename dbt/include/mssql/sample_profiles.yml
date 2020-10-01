@@ -1,0 +1,19 @@
+default:
+  target: dev
+
+  outputs:
+    dev:
+      type: mssql
+      driver: 'ODBC Driver 17 for SQL Server'
+      host: bfpdb.engr.oregonstate.edu
+      database: GrantProjection
+      schema: dev
+      user: [username]
+      password: [password]
+    prod:
+      type: mssql
+      driver: 'ODBC Driver 17 for SQL Server'
+      host: bfpdb.engr.oregonstate.edu
+      database: GrantProjection
+      schema: dbo
+      windows_login: True
