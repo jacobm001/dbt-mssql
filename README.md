@@ -1,23 +1,23 @@
-# dbt-mssql
+#1 dbt-mssql :
 
-dbt-mssql is a custom adapter for [dbt](https://github.com/fishtown-analytics/dbt) that adds support for Microsoft SQL Server versions 2008 R2 and later. pyodbc is used as the connection driver as that is what is [suggested by Microsoft](https://docs.microsoft.com/en-us/sql/connect/python/python-driver-for-sql-server). The adapter supports both windows auth, and specified user accounts.
+              dbt-mssql is a custom adapter for [dbt](https://github.com/fishtown-analytics/dbt) that adds support for Microsoft SQL Server versions 2008 R2 and later. pyodbc is used as the connection driver as that is what is [suggested by Microsoft](https://docs.microsoft.com/en-us/sql/connect/python/python-driver-for-sql-server). The adapter supports both windows auth, and specified user accounts.
 
-## Connecting to SQL Server
+#2.1 Connecting to SQL Server :
 
-Your user profile (located in `~/.dbt/profile`) will need an appropriate entry for your package. 
+                             Your user profile (located in `~/.dbt/profile`) will need an appropriate entry for your package. 
 
-Required parameters are:
+                             Required parameters are:
 
-- driver
-- host
-- database
-- schema
-- one of the login options:
-  - SQL Server authentication
-    - username
-    - password
-  - Windows Login
-    - windows_login: true
+                                                      i. DRIVER
+                                                     ii. HOST
+                                                    iii. DATABASE
+                                                     iv. SCHEMA
+                                                      v. One of the login options:
+                                                                                  a. SQL Server Authentication
+                                                                                                               - username
+                                                                                                               - password
+                                                                                  b. Windows Login
+                                                                                                               - windows_login: true
 
 **Example profile:**
 
@@ -44,18 +44,18 @@ foo:
       password: super_secret_dbt_password
 ```
 
-## Jaffle Shop
+#2.2 Jaffle Shop
 
 Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_shop) package is currently unsupported by this adapter. At the time of this writing, jaffle shop uses the `using()` join, and `group by [ordinal]` notation which is not supported in T-SQL. An alternative version has been forked by the author of dbt-mssql [here](https://github.com/jacobm001/jaffle_shop_mssql).
 
-## Creating indexes on post-hook
+#2.3 Creating indexes on post-hook
 
 - To create a nonclustered index for a specific model, go to that model's SQL and add a `config` macro with a `pre-hook` and `post-hook` key/value pair.  
 - Whenever you _create_nonclustered_index_ on a `post-hook`, we recommend you _drop_all_indexes_on_table_ on a `pre-hook`.  
 - You can create more than one index on a model in the `post-hook` by submitting a bracketed list of _create_nonclustered_index_ macros. 
 - See examples below.
 
-### Macro Syntax
+#3.1 Macro Syntax
 
 - _create_clustered_index_ takes one argument:
   - column - a quoted string that refers to the column you want to create a clustered index on
@@ -64,7 +64,7 @@ Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_s
   - columns - a list of quoted strings that refer to the column names you want to create the index on
   - includes - a list of quotes strings that refer to the column names that you want to include in the index look-ups.
 
-### Create one index on a model
+#3.2 Create one index on a model
 
 ```jinja2
 {{ 
@@ -75,7 +75,7 @@ Fishtown Analytic's [jaffle shop](https://github.com/fishtown-analytics/jaffle_s
 }}
 ```
 
-### Create many indexes on a model 
+#3.3 Create many indexes on a model 
 
 ```jinja2
 {{ 
