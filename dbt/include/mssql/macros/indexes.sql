@@ -119,7 +119,7 @@ clustered index
 
 {% macro create_nonclustered_index(columns, includes) %}
 
-{% if include_names is undefined %}
+{% if includes is undefined %}
 
 {{ log("Creating nonclustered index without include clause...") }}
 
