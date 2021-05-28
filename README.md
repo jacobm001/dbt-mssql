@@ -1,3 +1,7 @@
+# Archived Note
+
+I'm officially archiving this repo as I don't currently have a need for it and [dbt-sqlserver](https://github.com/dbt-msft/dbt-sqlserver) has long surpassed this repo. I see no current value in maintaining a redundant project and instead encorage people to use that option.
+
 # dbt-mssql
 
 dbt-mssql is a custom adapter for [dbt](https://github.com/fishtown-analytics/dbt) that adds support for Microsoft SQL Server versions 2008 R2 and later. pyodbc is used as the connection driver as that is what is [suggested by Microsoft](https://docs.microsoft.com/en-us/sql/connect/python/python-driver-for-sql-server). The adapter supports both windows auth, and specified user accounts.
